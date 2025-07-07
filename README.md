@@ -1,6 +1,6 @@
 # VX-Engine
 
-A simple console and SDL2 based game engine written in C++
+A simple console and SDL2 based game engine written in C++. 
 Supports player movement, item pickup, monster AI, and turn-based combat
 
 -------------------------------------------------------------------------

@@ -1,30 +1,25 @@
+#include <iostream>
 #include "Trap.hpp"
 
-Trap::Trap(std::string name, int x_position, int y_position, std::vector<Uint32> rgb)
+Trap::Trap(std::string name, int x_position, int y_position, Color rgb)
 {
 	this->Name = name;
-	this->XPos = x_position;
-	this->YPos = y_position;
-
-	for (Uint32 color : rgb)
-	{
-		this->RGB.push_back(color);
-	}
+	this->position.X = x_position;
+	this->position.Y = y_position;
+	this->color.Red = rgb.Red;
+	this->color.Green = rgb.Green;
+	this->color.Blue = rgb.Blue;
 }
 
 std::string Trap::get_name()
 {
 	return this->Name;
 }
-int Trap::get_xposition()
+Position Trap::get_position()
 {
-	return this->XPos;
+	return this->position;
 }
-int Trap::get_yposition()
+Color Trap::get_color()
 {
-	return this->YPos;
-}
-std::vector<Uint32> Trap::get_color()
-{
-	return this->RGB;
+	return this->color;
 }

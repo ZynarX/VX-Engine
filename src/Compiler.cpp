@@ -9,6 +9,7 @@ Compiler::Compiler(std::string filepath)
 	if (output.is_open())
 	{
 		this->FILE_PATH = filepath;
+		this->compilable = true;
 
 		output.close();
 
@@ -19,10 +20,13 @@ Compiler::Compiler(std::string filepath)
 		this->RESERVED_KEYWORDS.push_back("$/EOEITII/$");
 		this->RESERVED_KEYWORDS.push_back("$/EOIITTC/$");
 		this->RESERVED_KEYWORDS.push_back("$/EOIITTI/$");
+		this->RESERVED_KEYWORDS.push_back("$/EOTITNMT/$");
+		this->RESERVED_KEYWORDS.push_back("$/EONMTTNMP/$");
 		this->RESERVED_KEYWORDS.push_back("$/EOWDAI/$");
 	}
 	else
 	{
+		this->compilable = false;
 		std::cout << "Couldn't open file path to compile..." << std::endl;
 	}
 }
@@ -53,6 +57,11 @@ std::vector<std::string> Compiler::get_info(std::string line, char split)
 
 bool Compiler::Compile()
 {
+	if (this->compilable == false)
+	{
+		return false;
+	}
+
 	if (!this->FILE_PATH.empty())
 	{
 		std::ifstream fileContent;
@@ -119,9 +128,19 @@ bool Compiler::Compile()
 								mode = 7;
 								break;
 							}
-							else if (reserved_keyword == "$/EOWDAI/$")
+							else if (reserved_keyword == "$/EOTITNMT/$")
 							{
 								mode = 8;
+								break;
+							}
+							else if (reserved_keyword == "$/EONMTTNMP/$")
+							{
+								mode = 9;
+								break;
+							}
+							else if (reserved_keyword == "$/EOWDAI/$")
+							{
+								mode = 10;
 								break;
 							}
 						}
@@ -264,10 +283,47 @@ bool Compiler::Compile()
 								}
 							}
 						}
+						else if (mode == 8)
+						{
+							try
+							{
+								if (std::stoi(fileData[i]) == 1)
+								{
+									this->nextMap = true;
+								}
+								else
+								{
+									this->nextMap = false;
+								}
+							}
+							catch (const std::exception& e)
+							{
+								std::cout << e.what() << std::endl;
+							}
+						}
+						else if (mode == 9)
+						{
+							try
+							{
+								if (this->nextMap)
+								{
+									std::string nextMapFile = fileData[i];
+									nextMapFile.empty() ? this->nextFileMap = "" : this->nextFileMap = nextMapFile;
+								}
+								else
+								{
+									this->nextFileMap = "";
+								}
+							}
+							catch (const std::exception& e)
+							{
+								std::cout << e.what() << std::endl;
+							}
+						}
 					}
 					else
 					{
-						if (mode == 8)
+						if (mode == 10)
 						{
 							break;
 						}
@@ -300,6 +356,20 @@ char* Compiler::get_filepath()
 	return filepath;
 }
 
+char* Compiler::get_next_map()
+{
+	std::string next_filepath = this->nextFileMap;
+	char filepath[25] = "";
+	int i = 0;
+
+	for (auto& c : next_filepath)
+	{
+		filepath[i] = c;
+		i++;
+	}
+
+	return filepath;
+}
 std::vector<std::string> Compiler::get_player()
 {
 	return this->CURRENT_PLAYER;

@@ -2,19 +2,20 @@
 #include <vector>
 #include <string>
 #include <SDL.h>
+#include "EntityComponentSystem.h"
 #pragma once
 
 class Item {
 private:
 	std::string Name;
-	int XPos;
-	int YPos;
-	std::vector<Uint32> RGB;
+	Position position;
+	Color color;
+	int buff;
 public:
-	Item(std::string name, int x_position, int y_position, std::vector<Uint32> rgb);
+	Item(std::string name, int x_position, int y_position, int buff, Color rgb);
 	
 	std::string get_name();
-	int get_xposition();
-	int get_yposition();
-	std::vector<Uint32> get_color();
+	Position get_position();
+	int get_buff();
+	Color get_color();
 };

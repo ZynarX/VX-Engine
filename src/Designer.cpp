@@ -169,6 +169,8 @@ void Designer::Design()
 					std::string iName = "";
 					int iX = -1;
 					int iY = -1;
+					int iHostilityMode = -1;
+					int iHostilityDamage = 0;
 					int iRed = -1;
 					int iGreen = -1;
 					int iBlue = -1;
@@ -203,6 +205,31 @@ void Designer::Design()
 
 					do
 					{
+						std::cout << "- Entity No. " << i << " hostility mode (1. Hostile, 2. None Hostile): ";
+						std::cin >> iHostilityMode;
+
+						if (iHostilityMode != 1 && iHostilityMode != 2)
+						{
+							std::cout << " - Invalid Value of Entity No. " << i << " hostility mode!" << std::endl;
+						}
+					} while (iHostilityMode != 1 && iHostilityMode != 2);
+
+					if (iHostilityMode == 1)
+					{
+						do
+						{
+							std::cout << "- Entity No. " << i << " damage (0 -> 50): ";
+							std::cin >> iHostilityDamage;
+
+							if (iHostilityDamage < 0 || iHostilityDamage > 50)
+							{
+								std::cout << " - Invalid Value of Entity No. " << i << " hostility damage!" << std::endl;
+							}
+						} while (iHostilityDamage < 0 || iHostilityDamage > 50);
+					}
+
+					do
+					{
 						std::cout << "- Entity No. " << i << " color Red Variant (0 -> 255): ";
 						std::cin >> iRed;
 
@@ -234,7 +261,7 @@ void Designer::Design()
 						}
 					} while (iBlue < 0 || iBlue > 255);
 
-					this->entities_info[iName] = { iX, iY, iRed, iGreen, iBlue };
+					this->entities_info[iName] = { iX, iY, iHostilityMode, iHostilityDamage, iRed, iGreen, iBlue };
 				}
 
 				int NumberOfItems = -1;
@@ -250,6 +277,7 @@ void Designer::Design()
 					std::string iName = "";
 					int iX = -1;
 					int iY = -1;
+					int iBuff = -1;
 					int iRed = -1;
 					int iGreen = -1;
 					int iBlue = -1;
@@ -284,6 +312,17 @@ void Designer::Design()
 
 					do
 					{
+						std::cout << "- Item No. " << i << " damage Buff (0 -> 10): ";
+						std::cin >> iBuff;
+
+						if (iBuff < 0 || iBuff > 10)
+						{
+							std::cout << " - Invalid Value of Item No. " << i << " damage Buff!" << std::endl;
+						}
+					} while (iBuff < 0 || iBuff > 10);
+
+					do
+					{
 						std::cout << "- Item No. " << i << " color Red Variant (0 -> 255): ";
 						std::cin >> iRed;
 
@@ -315,7 +354,7 @@ void Designer::Design()
 						}
 					} while (iBlue < 0 || iBlue > 255);
 
-					this->items_info[iName] = { iX, iY, iRed, iGreen, iBlue };
+					this->items_info[iName] = { iX, iY, iBuff, iRed, iGreen, iBlue };
 				}
 
 				int NumberOfTraps = -1;
@@ -392,6 +431,45 @@ void Designer::Design()
 					this->traps_info.push_back({ iX, iY, iRed, iGreen, iBlue });
 				}
 
+				char nextMapOption = '\0';
+				int nextMap = -1;
+				std::string nextMapPath = "";
+
+				do
+				{
+					std::cout << "Next Map (Y/N): ";
+					std::cin >> nextMapOption;
+
+					nextMapOption = toupper(nextMapOption);
+
+					if (nextMapOption == 'Y')
+					{
+						nextMap = 1;
+					}
+					else if (nextMapOption == 'N')
+					{
+						nextMap = 0;
+					}
+					else
+					{
+						nextMap = -1;
+					}
+				} while (nextMap == -1);
+
+				if (nextMap == 1)
+				{
+					do
+					{
+						std::cout << "- Next Map File Name (e.g. game.vxed): ";
+						std::getline(std::cin >> std::ws, nextMapPath);
+
+						if (nextMapPath.empty())
+						{
+							std::cout << " - Invalid Value of Next Map File Name!" << std::endl;
+						}
+					} while (nextMapPath.empty());
+				}
+
 				this->data.push_back(std::to_string(WIDTH) + ',' + std::to_string(HEIGHT) + ',' + std::to_string(BackgroundRed) + ',' + std::to_string(BackgroundGreen) + ',' + std::to_string(BackgroundBlue));
 				this->data.push_back("$/EOWDTPI/$");
 
@@ -404,7 +482,7 @@ void Designer::Design()
 
 				for (auto& pair : this->entities_info)
 				{
-					this->data.push_back(pair.first + ',' + std::to_string(pair.second[0]) + ',' + std::to_string(pair.second[1]) + ',' + std::to_string(pair.second[2]) + ',' + std::to_string(pair.second[3]) + ',' + std::to_string(pair.second[4]));
+					this->data.push_back(pair.first + ',' + std::to_string(pair.second[0]) + ',' + std::to_string(pair.second[1]) + ',' + std::to_string(pair.second[2]) + ',' + std::to_string(pair.second[3]) + ',' + std::to_string(pair.second[4]) + ',' + std::to_string(pair.second[5]) + ',' + std::to_string(pair.second[6]));
 				}
 
 				this->data.push_back("$/EOEITIC/$");
@@ -415,7 +493,7 @@ void Designer::Design()
 
 				for (auto& pair : this->items_info)
 				{
-					this->data.push_back(pair.first + ',' + std::to_string(pair.second[0]) + ',' + std::to_string(pair.second[1]) + ',' + std::to_string(pair.second[2]) + ',' + std::to_string(pair.second[3]) + ',' + std::to_string(pair.second[4]));
+					this->data.push_back(pair.first + ',' + std::to_string(pair.second[0]) + ',' + std::to_string(pair.second[1]) + ',' + std::to_string(pair.second[2]) + ',' + std::to_string(pair.second[3]) + ',' + std::to_string(pair.second[4]) + ',' + std::to_string(pair.second[5]));
 				}
 
 				this->data.push_back("$/EOIITTC/$");
@@ -427,6 +505,16 @@ void Designer::Design()
 				for (auto& trap : this->traps_info)
 				{
 					this->data.push_back("Trap," + std::to_string(trap[0]) + ',' + std::to_string(trap[1]) + ',' + std::to_string(trap[2]) + ',' + std::to_string(trap[3]) + ',' + std::to_string(trap[4]));
+				}
+
+				this->data.push_back("$/EOTITNMT/$");
+
+				this->data.push_back(std::to_string(nextMap));
+
+				if (!nextMapPath.empty())
+				{
+					this->data.push_back("$/EONMTTNMP/$");
+					this->data.push_back(nextMapPath);
 				}
 
 				this->data.push_back("$/EOWDAI/$");
